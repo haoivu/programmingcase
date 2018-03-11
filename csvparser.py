@@ -1,66 +1,71 @@
-import csv #imports module csv
+import csv 
+from pprint import pprint
+from collections import OrderedDict
 
 filea = "1.csv"
 fileb = "2.csv"
 output = "3.csv"
 
-delim = "\t" #set your own delimiter
+delim = "\t"
 
 source1 = csv.reader(open(filea,"r"),delimiter=delim)
 next(source1)
 source2 = csv.reader(open(fileb,"r"),delimiter=delim)
-#open csv readers
 
-source2_dict = {}
+source_1_as_list = []
+source_2_as_list = []
 
-# prepare changes from file B
 for row in source2:
-    for x in range (1, 9):
-        source2_dict[row[x]] = row[x]
-    print(source2_dict)   
-    
+    source2_dict = OrderedDict()
+    for x in range (0, 9):
+        source2_dict[x] = row[x]
+    source_2_as_list.append(source2_dict)
+
+
+
+for row in source1:
+    source1_dict = OrderedDict()
+    for x in range (0, 9):
+        source1_dict[row[x]] = row[x]
+    source_1_as_list.append(source1_dict)
+
+
+for person_dict_new in source_2_as_list:
+    for index, person_dict_old in enumerate(source_1_as_list):
+        if(person_dict_new[2] in person_dict_old):
+            #print(person_dict_new)
+            source_1_as_list[index] = person_dict_new
+            print(source_1_as_list)
+
+
 # write new changed rows
 with open(output, "w") as fout:
     csvwriter = csv.writer(fout, delimiter=delim, quoting=csv.QUOTE_ALL)
+    for person_dict_new in source_2_as_list:
+        for index, person_dict_old in enumerate(source_1_as_list):
+            if(person_dict_new[2] in person_dict_old):
+                #print(person_dict_new)
+                source_1_as_list[index] = person_dict_new
+                print(source_1_as_list)
+                csvwriter.writerow(person_dict_new)
+
+"""    
     for row in source1:
+        print(row)
         # needs to check whether there are any changes prepared
-        for x in range(1,9):
+        for x in range(0,9):
             if row[x] in (None, ""):
                 print("Row "+ row[0]+", column " + str(x) + " is empty.")
+        
         if row[2] in source2_dict:
             # change the item
-            for x in range(1,9):
-                row[x] = "helo?"
+            for x in range(0,9):
+                row[x] = source2_dict[row[x]] 
         csvwriter.writerow(row)
+"""
 
 outputfile = open(output)
 outputreader = csv.reader(outputfile, delimiter=delim)
 outputdata = list(outputreader)
 for row in outputdata:
     print(str(row))
-
-    
-
-
-""" 
-fileKilde = "a.csv"
-filePersoner = "b.csv"
-output = "c.csv"
-
-delim = "\t"
-
-source1 = csv.reader(open(fileKilde,"r"), delimiter=delim)
-source2 = csv.reader(open(filePersoner,"r"), delimiter=delim)
-
-source2Dict = {}
-
-for row in source1:
-    source2Dict[row[0]] = row[1]
-    print(source2Dict)
-
-with open(output, "w") as fout:
-    csvwriter = csv.writer(fout, delimiter=delim)
-    for row in source1:
-        if row[1] in source2Dict:
-            row[3] = source2Dict[row[1]]
-        csvwriter.writerow(row) """
