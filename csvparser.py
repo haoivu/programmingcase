@@ -1,4 +1,5 @@
-import csv #imports module csv
+import csv
+from collections import OrderedDict
 
 filea = "1.csv"
 fileb = "2.csv"
@@ -6,31 +7,35 @@ output = "3.csv"
 
 delim = "\t" #set your own delimiter
 
-source1 = csv.reader(open(filea,"r"),delimiter=delim)
-next(source1)
-source2 = csv.reader(open(fileb,"r"),delimiter=delim)
+oldFile = csv.reader(open(filea,"r"),delimiter=delim)
+next(oldFile)
+newFile = csv.reader(open(fileb,"r"),delimiter=delim)
 #open csv readers
 
-source2_dict = {}
+oldFileAsDict = dict()
+newFileAsDict = dict()
 
 # prepare changes from file B
-for row in source2:
-    for x in range (1, 9):
-        source2_dict[row[x]] = row[x]
-    print(source2_dict)   
+for row in oldFile:
+    for i in range (0, 9):
+        newFileAsDict[i+1] = row[i]
+print(newFileAsDict.items())
     
 # write new changed rows
-with open(output, "w") as fout:
-    csvwriter = csv.writer(fout, delimiter=delim, quoting=csv.QUOTE_ALL)
-    for row in source1:
+with open(output, "w+") as fileoutput:
+    csvwriter = csv.writer(fileoutput, delimiter=delim, quoting=csv.QUOTE_ALL)
+    for row in oldFile:
         # needs to check whether there are any changes prepared
-        for x in range(1,9):
-            if row[x] in (None, ""):
-                print("Row "+ row[0]+", column " + str(x) + " is empty.")
-        if row[2] in source2_dict:
+        """         
+        for x in range(0, 9):
+        if row[x] in (None, ""):
+            print("Row "+ row[0]+", column " + str(x) + " is empty.")
+        """
+        print(row[2])
+        if row[2] in newFileAsDict:
             # change the item
-            for x in range(1,9):
-                row[x] = "helo?"
+            for i in range(0, 9):
+                row[i] = "helo?"
         csvwriter.writerow(row)
 
 outputfile = open(output)
@@ -64,3 +69,48 @@ with open(output, "w") as fout:
         if row[1] in source2Dict:
             row[3] = source2Dict[row[1]]
         csvwriter.writerow(row) """
+
+
+"""
+import csv
+from collections import OrderedDict
+
+filea = "1.csv"
+fileb = "2.csv"
+output = "3.csv"
+
+delim = "\t"
+
+oldFile = csv.reader(open(filea,"r"),delimiter=delim)
+next(oldFile)
+newFile = csv.reader(open(fileb,"r"),delimiter=delim)
+
+oldFileAsList = []
+newFileAsList = []
+
+for row in newFile:
+    newFileDict = OrderedDict()
+    for i in range (0, 9):
+        newFileDict[i] = row[i]
+    newFileAsList.append(newFileDict)
+
+for row in oldFile:
+    oldFileDict = OrderedDict()
+    for i in range (0, 9):
+        oldFileDict[row[i]] = row[i]
+    oldFileAsList.append(oldFileDict)
+
+for personNewDict in newFileAsList:
+    for index, personOldDict in enumerate(oldFileAsList):
+        if(personNewDict[2]) in personOldDict:
+            oldFileAsList[index] = personNewDict
+
+with open(output, "w") as fileoutput:
+    csvwriter = csv.writer(fileoutput, delimiter=delim, quoting=csv.QUOTE_ALL)
+    for personNewDict in newFileAsList:
+        for index, personOldDict in enumerate(oldFileAsList):
+            if(personNewDict[0] in personOldDict):
+                oldFileAsList[index] = personNewDict
+                print(oldFileAsList)
+                csvwriter.writenow(personNewDict)
+"""
