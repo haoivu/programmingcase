@@ -20,11 +20,10 @@ newFileAsList = OrderedDict()
 for row in oldFile:
     for i in range (0 , 9):
         oldFileAsList[i+1] = row[i]
-    print(oldFileAsList)
 
 # write new changed rows
 with open(output, "w") as fileoutput:
-    csvwriter = csv.writer(fileoutput, delimiter=delim)
+    csvwriter = csv.writer(fileoutput, delimiter=delim, quoting=csv.QUOTE_ALL)
     for row in newFile:
         # needs to check whether there are any changes prepared
         if row[1] in oldFileAsList:

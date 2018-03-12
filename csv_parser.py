@@ -35,7 +35,7 @@ with open(output, "w") as fileoutput:
     csvwriter = csv.writer(fileoutput, delimiter=delim, quoting=csv.QUOTE_ALL)
     for personNewDict in newFileAsList:
         for index, personOldDict in enumerate(oldFileAsList):
-            if(personNewDict[0] in personOldDict):
+            if(personNewDict[2] in personOldDict):
                 oldFileAsList[index] = personNewDict
                 print(oldFileAsList)
-                csvwriter.writenow(personNewDict)
+            csvwriter.writenow(personNewDict)
